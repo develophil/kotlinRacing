@@ -13,4 +13,9 @@ class RacingKtTest {
         Assert.assertEquals("test", input)
 
     }
+
+    @Test
+    fun printDistanceTest() {
+        Assert.assertEquals("---", printDistance(3))
+    }
 }
