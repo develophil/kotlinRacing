@@ -16,17 +16,10 @@ kotlin으로 자동차 경주 게임 구현
 위 요구사항에 따라 3대의 자동차가 5번 움직였을 경우 프로그램을 실행한 결과는 다음과 같다.
 
  1. 자동차 이름 입력받기
-
  2. 시도할 횟수 입력받기
-
  3. 경주판 구성
-   - 트랙
-   -
-
  4. 경주
-
  5. 우승자 출력
-
  */
 
 fun getInputData(msg: String): String {
@@ -34,37 +27,37 @@ fun getInputData(msg: String): String {
     return Scanner(System.`in`).next()
 }
 
-fun canForward(): Boolean {
-    return when {
-        ( Math.random() * 10 ) >= 4 -> true
-        else -> false
-    }
-}
-
 fun main(args: Array<String>) {
 
-    val carNamesStr = getInputData("경주할 자동차 이름을 입력하세요 (이름은 쉼표,)를 기준으로 구분)")
+    //1.
+    val carNamesStr = getInputData("경주할 자동차 이름을 입력하세요 (이름은 쉼표(,)를 기준으로 구분)")
+
+    //2.
     val cycleStr = getInputData("시도할 횟수는 몇회인가요?")
 
-    var playground = RacingPlayground(cycleStr.toInt())
+    //3.
+    var playground = RacingPlayground(carNamesStr, cycleStr.toInt())
 
-    for (name in carNamesStr.split(",")) {
-
-        playground.trackList.add( Track( Car(name), 0 ) )
-
-    }
-
+    //4.
     playground.race()
 
+    //5.
     playground.printWinner()
-
 
 }
 
 class Car(var name: String)
 
-class RacingPlayground(val cycle: Int) {
+class RacingPlayground(val carNamesStr: String, val cycle: Int) {
+
     var trackList: ArrayList<Track> = ArrayList()
+
+    init {
+        for (name in carNamesStr.split(",")) {
+            trackList.add( Track( Car(name), 0 ) )
+
+        }
+    }
 
     fun race() {
         for (i in 1..cycle) {
@@ -91,6 +84,14 @@ fun printDistance(distance: Int): String {
 }
 
 class Track(var car: Car, var distance: Int) {
+
+    fun canForward(): Boolean {
+        return when {
+            ( Math.random() * 10 ) >= 4 -> true
+            else -> false
+        }
+    }
+
     fun forward() {
         if(canForward())
             distance += 1
