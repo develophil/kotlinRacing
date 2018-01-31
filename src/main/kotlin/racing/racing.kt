@@ -22,21 +22,29 @@ kotlin으로 자동차 경주 게임 구현
  5. 우승자 출력
  */
 
+// scanner 이용
 fun getInputData(msg: String): String {
     print("$msg : ")
-    return Scanner(System.`in`).next()
+    return Scanner(System.`in`).next()!!
+}
+// readline이용
+fun getInputDataWithReadLine(msg: String): String {
+    print("$msg : ")
+    return readLine()!!
+}
+fun getCarNamesFromConsole(): List<String> {
+    return getInputDataWithReadLine("경주할 자동차 이름을 입력하세요 (이름은 쉼표(,)를 기준으로 구분)").split(",").filter { it.isNotEmpty() }
+}
+fun getCycleFromConsole(): Int {
+    return getInputDataWithReadLine("시도할 횟수는 몇회인가요?").toInt()
 }
 
 fun main(args: Array<String>) {
 
     //1.
-    val carNamesStr = getInputData("경주할 자동차 이름을 입력하세요 (이름은 쉼표(,)를 기준으로 구분)")
-
     //2.
-    val cycleStr = getInputData("시도할 횟수는 몇회인가요?")
-
     //3.
-    var playground = RacingPlayground(carNamesStr, cycleStr.toInt())
+    var playground = RacingPlayground(getCarNamesFromConsole(), getCycleFromConsole())
 
     //4.
     playground.race()
@@ -48,12 +56,12 @@ fun main(args: Array<String>) {
 
 class Car(var name: String)
 
-class RacingPlayground(val carNamesStr: String, val cycle: Int) {
+class RacingPlayground(val carNames: List<String>, val cycle: Int) {
 
     var trackList: ArrayList<Track> = ArrayList()
 
     init {
-        for (name in carNamesStr.split(",")) {
+        for (name in carNames) {
             trackList.add( Track( Car(name), 0 ) )
 
         }
@@ -64,23 +72,16 @@ class RacingPlayground(val carNamesStr: String, val cycle: Int) {
             println()
             for (track in trackList) {
                 track.forward()
-                println("${track.car.name} : ${printDistance(track.distance)}")
+                println("${track.car.name} : ${track.printDistance()}")
             }
         }
     }
 
     fun printWinner() {
-        val winners = trackList.maxBy { it.distance }
-        println("${winners!!.car.name} 가 최종 우승했습니다.")
-    }
-}
-fun printDistance(distance: Int): String {
-    var str: String = ""
+        val winners = trackList.groupBy { it.distance }.maxBy { it.key }
 
-    for (i in 1..distance) {
-        str += "-"
+        println("최종 우승자는 ${winners!!.value.map { it.car.name }} 입니다.")
     }
-    return str
 }
 
 class Track(var car: Car, var distance: Int) {
@@ -95,5 +96,16 @@ class Track(var car: Car, var distance: Int) {
     fun forward() {
         if(canForward())
             distance += 1
+    }
+
+    infix fun String.repeat(no: Int): String {
+        val that = this;
+        return buildString {
+            (0 until no).forEach { append(that) }
+        }
+    }
+
+    fun printDistance(): String {
+        return "-".repeat(distance)
     }
 }
