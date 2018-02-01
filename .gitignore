@@ -36,3 +36,5 @@ build/
 .idea/.name
 
 *.class
+
+gradle/wrapper/gradle-wrapper\.properties

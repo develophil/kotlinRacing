@@ -80,11 +80,16 @@ class RacingPlayground(val carNames: List<String>, val cycle: Int) {
     fun printWinner() {
         val winners = trackList.groupBy { it.distance }.maxBy { it.key }
 
-        println("최종 우승자는 ${winners!!.value.map { it.car.name }} 입니다.")
+//        println("최종 우승자는 ${winners!!.value.map { it.car.name }} 입니다.")    // name 만 맵으로 뽑아서 출력.
+        println("최종 우승자는 ${winners!!.value} 입니다.")  //toString override 해서 출력.
     }
 }
 
-class Track(var car: Car, var distance: Int) {
+data class Track(var car: Car, var distance: Int) {
+
+    override fun toString(): String {
+        return car.name
+    }
 
     fun canForward(): Boolean {
         return when {
